@@ -10,6 +10,7 @@ import Time exposing (Month(..), Posix, Zone)
 -- MAIN
 
 
+main : Program () Model Msg
 main =
     Browser.element
         { init = init
@@ -64,7 +65,7 @@ update msg model =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Time.every 1000 Tick
 
 
@@ -87,7 +88,25 @@ view model =
         day =
             String.fromInt (dayOfYear model.zone model.time)
     in
-    h1 [] [ text (hour ++ ":" ++ minute ++ ":" ++ second ++ ", " ++ day) ]
+    div []
+        [ h1 [] [ text (hour ++ ":" ++ minute ++ ":" ++ second ++ ", " ++ day) ]
+        , table []
+            [ thead []
+                [ tr []
+                    [ th
+                        []
+                        [ text "A" ]
+                    ]
+                ]
+            , tbody [] (List.map renderFoo [ Jan, Feb ])
+            ]
+        ]
+
+
+renderFoo : Time.Month -> Html msg
+renderFoo month =
+    tr []
+        [ td [] [ text (String.fromInt (cumulativeDaysByMonth False month)) ] ]
 
 
 {-| Calculate the day of the year (1-366) for a given date
