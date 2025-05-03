@@ -128,39 +128,46 @@ cumulativeDaysByMonth isLeap month =
                     31
 
                 Mar ->
-                    31 + 28
+                    59
 
                 Apr ->
-                    31 + 28 + 31
+                    90
 
                 May ->
-                    31 + 28 + 31 + 30
+                    120
 
                 Jun ->
-                    31 + 28 + 31 + 30 + 31
+                    151
 
                 Jul ->
-                    31 + 28 + 31 + 30 + 31 + 30
+                    181
 
                 Aug ->
-                    31 + 28 + 31 + 30 + 31 + 30 + 31
+                    212
 
                 Sep ->
-                    31 + 28 + 31 + 30 + 31 + 30 + 31 + 31
+                    243
 
                 Oct ->
-                    31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30
+                    273
 
                 Nov ->
-                    31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31
+                    304
 
                 Dec ->
-                    31 + 28 + 31 + 30 + 31 + 30 + 31 + 31 + 30 + 31 + 30
+                    334
 
-        -- Add 1 day for leap year if we're past February
         leapAdjustment =
-            if isLeap && month /= Jan && month /= Feb then
-                1
+            if isLeap then
+                case month of
+                    Jan ->
+                        0
+
+                    Feb ->
+                        0
+
+                    _ ->
+                        1
 
             else
                 0
