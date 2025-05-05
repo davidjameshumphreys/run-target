@@ -2,6 +2,8 @@ module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
 import Html exposing (..)
+import List
+import RunTable exposing (..)
 import Task
 import Time exposing (Month(..), Posix, Zone)
 
@@ -90,16 +92,7 @@ view model =
     in
     div []
         [ h1 [] [ text (hour ++ ":" ++ minute ++ ":" ++ second ++ ", " ++ day) ]
-        , table []
-            [ thead []
-                [ tr []
-                    [ th
-                        []
-                        [ text "A" ]
-                    ]
-                ]
-            , tbody [] (List.map renderFoo [ Jan, Feb ])
-            ]
+        , renderTable False 1000
         ]
 
 
@@ -131,64 +124,3 @@ dayOfYear zone time =
             cumulativeDaysByMonth isLeap month
     in
     daysBeforeMonth + day
-
-
-{-| Cumulative days at the start of each month (days before the first day of the month)
--}
-cumulativeDaysByMonth : Bool -> Month -> Int
-cumulativeDaysByMonth isLeap month =
-    let
-        days =
-            case month of
-                Jan ->
-                    0
-
-                Feb ->
-                    31
-
-                Mar ->
-                    59
-
-                Apr ->
-                    90
-
-                May ->
-                    120
-
-                Jun ->
-                    151
-
-                Jul ->
-                    181
-
-                Aug ->
-                    212
-
-                Sep ->
-                    243
-
-                Oct ->
-                    273
-
-                Nov ->
-                    304
-
-                Dec ->
-                    334
-
-        leapAdjustment =
-            if isLeap then
-                case month of
-                    Jan ->
-                        0
-
-                    Feb ->
-                        0
-
-                    _ ->
-                        1
-
-            else
-                0
-    in
-    days + leapAdjustment
