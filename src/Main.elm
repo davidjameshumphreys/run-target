@@ -29,12 +29,13 @@ type alias Model =
     { zone : Time.Zone
     , time : Time.Posix
     , isLeap : Bool
+    , distance : Int
     }
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model Time.utc (Time.millisToPosix 0) False
+    ( Model Time.utc (Time.millisToPosix 0) False 1000
     , Task.perform AdjustTimeZone Time.here
     )
 
@@ -46,6 +47,7 @@ init _ =
 type Msg
     = Tick Time.Posix
     | AdjustTimeZone Time.Zone
+    | AdjustDistance Int
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -68,6 +70,9 @@ update msg model =
             , Cmd.none
             )
 
+        AdjustDistance newDistance ->
+            ( { model | distance = newDistance }, Cmd.none )
+
 
 
 -- SUBSCRIPTIONS
@@ -85,7 +90,7 @@ subscriptions _ =
 view : Model -> Html Msg
 view model =
     div []
-        [ renderTable model.isLeap 1000
+        [ renderTable model.isLeap model.distance
         ]
 
 
