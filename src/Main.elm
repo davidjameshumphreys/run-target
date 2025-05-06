@@ -43,7 +43,14 @@ type alias Marker =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model Time.utc (Time.millisToPosix 0) False 1000
+    let
+        zone =
+            Time.utc
+
+        time =
+            Time.millisToPosix 0
+    in
+    ( Model zone time (asMarker zone time) False 1000
     , Task.perform AdjustTimeZone Time.here
     )
 
@@ -72,9 +79,7 @@ update msg model =
             ( { model
                 | time = newTime
                 , isLeap = isLeap
-
-                -- D'oh! this will fail because it's the _previous_ model time
-                , currentMarker = asMarker model
+                , currentMarker = asMarker model.zone newTime
               }
             , Cmd.none
             )
@@ -134,17 +139,17 @@ dayOfYear zone time =
     daysBeforeMonth + day
 
 
-asMarker : Model -> Marker
-asMarker model =
+asMarker : Zone -> Posix -> Marker
+asMarker zone time =
     let
         year =
-            Time.toYear model.zone model.time
+            Time.toYear zone time
 
         month =
-            Time.toMonth model.zone model.time
+            Time.toMonth zone time
 
         day =
-            Time.toDay model.zone model.time
+            Time.toDay zone time
 
         isLeap =
             (modBy 4 year == 0) && ((modBy 100 year /= 0) || (modBy 400 year == 0))
