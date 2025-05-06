@@ -17,20 +17,35 @@ type alias M =
     }
 
 
-allMonths : List M
-allMonths =
+allMonths : Bool -> List M
+allMonths isLeap =
+    let
+        adj =
+            if isLeap then
+                1
+
+            else
+                0
+
+        feb =
+            if isLeap then
+                29
+
+            else
+                28
+    in
     [ { name = "Jan", m = Jan, days = 31, cDays = 31 }
-    , { name = "Feb", m = Feb, days = 28, cDays = 59 }
-    , { name = "Mar", m = Mar, days = 31, cDays = 90 }
-    , { name = "Apr", m = Apr, days = 30, cDays = 120 }
-    , { name = "May", m = May, days = 31, cDays = 151 }
-    , { name = "Jun", m = Jun, days = 30, cDays = 181 }
-    , { name = "Jul", m = Jul, days = 31, cDays = 212 }
-    , { name = "Aug", m = Aug, days = 31, cDays = 243 }
-    , { name = "Sep", m = Sep, days = 30, cDays = 273 }
-    , { name = "Oct", m = Oct, days = 31, cDays = 304 }
-    , { name = "Nov", m = Nov, days = 30, cDays = 334 }
-    , { name = "Dec", m = Dec, days = 31, cDays = 365 }
+    , { name = "Feb", m = Feb, days = feb, cDays = 59 + adj }
+    , { name = "Mar", m = Mar, days = 31, cDays = 90 + adj }
+    , { name = "Apr", m = Apr, days = 30, cDays = 120 + adj }
+    , { name = "May", m = May, days = 31, cDays = 151 + adj }
+    , { name = "Jun", m = Jun, days = 30, cDays = 181 + adj }
+    , { name = "Jul", m = Jul, days = 31, cDays = 212 + adj }
+    , { name = "Aug", m = Aug, days = 31, cDays = 243 + adj }
+    , { name = "Sep", m = Sep, days = 30, cDays = 273 + adj }
+    , { name = "Oct", m = Oct, days = 31, cDays = 304 + adj }
+    , { name = "Nov", m = Nov, days = 30, cDays = 334 + adj }
+    , { name = "Dec", m = Dec, days = 31, cDays = 365 + adj }
     ]
 
 
@@ -70,7 +85,7 @@ renderTable isLeap distance =
         , tbody []
             (List.map
                 (renderLine isLeap distance)
-                allMonths
+                (allMonths isLeap)
             )
         ]
 
