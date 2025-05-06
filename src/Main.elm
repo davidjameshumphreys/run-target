@@ -28,12 +28,13 @@ main =
 type alias Model =
     { zone : Time.Zone
     , time : Time.Posix
+    , isLeap : Bool
     }
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model Time.utc (Time.millisToPosix 0)
+    ( Model Time.utc (Time.millisToPosix 0) False
     , Task.perform AdjustTimeZone Time.here
     )
 
@@ -51,7 +52,14 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Tick newTime ->
-            ( { model | time = newTime }
+            let
+                year =
+                    Time.toYear model.zone newTime
+
+                isLeap =
+                    (modBy 4 year == 0) && ((modBy 100 year /= 0) || (modBy 400 year == 0))
+            in
+            ( { model | time = newTime, isLeap = isLeap }
             , Cmd.none
             )
 
@@ -77,7 +85,7 @@ subscriptions _ =
 view : Model -> Html Msg
 view model =
     div []
-        [ renderTable False 1000
+        [ renderTable model.isLeap 1000
         ]
 
 
