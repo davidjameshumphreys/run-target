@@ -27,8 +27,17 @@ main =
 type alias Model =
     { zone : Time.Zone
     , time : Time.Posix
+    , currentMarker : Marker
     , isLeap : Bool
     , distance : Int
+    }
+
+
+{-| -}
+type alias Marker =
+    { m : Month
+    , days : Int
+    , cDays : Int
     }
 
 
@@ -70,7 +79,9 @@ update msg model =
             )
 
         AdjustDistance newDistance ->
-            ( { model | distance = newDistance }, Cmd.none )
+            ( { model | distance = newDistance }
+            , Cmd.none
+            )
 
 
 
@@ -117,16 +128,8 @@ dayOfYear zone time =
     daysBeforeMonth + day
 
 
-type alias M =
-    { name : String
-    , m : Month
-    , days : Int
-    , cDays : Int
-    }
-
-
 {-| -}
-allMonths : Bool -> List M
+allMonths : Bool -> List Marker
 allMonths isLeap =
     let
         adj =
@@ -143,22 +146,22 @@ allMonths isLeap =
             else
                 28
     in
-    [ { name = "Jan", m = Jan, days = 31, cDays = 31 }
-    , { name = "Feb", m = Feb, days = feb, cDays = 59 + adj }
-    , { name = "Mar", m = Mar, days = 31, cDays = 90 + adj }
-    , { name = "Apr", m = Apr, days = 30, cDays = 120 + adj }
-    , { name = "May", m = May, days = 31, cDays = 151 + adj }
-    , { name = "Jun", m = Jun, days = 30, cDays = 181 + adj }
-    , { name = "Jul", m = Jul, days = 31, cDays = 212 + adj }
-    , { name = "Aug", m = Aug, days = 31, cDays = 243 + adj }
-    , { name = "Sep", m = Sep, days = 30, cDays = 273 + adj }
-    , { name = "Oct", m = Oct, days = 31, cDays = 304 + adj }
-    , { name = "Nov", m = Nov, days = 30, cDays = 334 + adj }
-    , { name = "Dec", m = Dec, days = 31, cDays = 365 + adj }
+    [ { m = Jan, days = 31, cDays = 31 }
+    , { m = Feb, days = feb, cDays = 59 + adj }
+    , { m = Mar, days = 31, cDays = 90 + adj }
+    , { m = Apr, days = 30, cDays = 120 + adj }
+    , { m = May, days = 31, cDays = 151 + adj }
+    , { m = Jun, days = 30, cDays = 181 + adj }
+    , { m = Jul, days = 31, cDays = 212 + adj }
+    , { m = Aug, days = 31, cDays = 243 + adj }
+    , { m = Sep, days = 30, cDays = 273 + adj }
+    , { m = Oct, days = 31, cDays = 304 + adj }
+    , { m = Nov, days = 30, cDays = 334 + adj }
+    , { m = Dec, days = 31, cDays = 365 + adj }
     ]
 
 
-renderLine : Bool -> Int -> M -> Html msg
+renderLine : Bool -> Int -> Marker -> Html msg
 renderLine isLeap distance m =
     let
         actC =
@@ -172,7 +175,7 @@ renderLine isLeap distance m =
                 365
     in
     tr []
-        [ td [] [ text (m.name ++ " " ++ String.fromInt m.days) ]
+        [ td [] [ text (monthName m.m ++ " " ++ String.fromInt m.days) ]
         , td [] [ text (String.fromInt actC) ]
         , td [] [ text (String.fromInt (ceiling ((toFloat distance / y) * toFloat actC))) ]
         ]
@@ -258,3 +261,43 @@ cumulativeDaysByMonth isLeap month =
                 0
     in
     days + leapAdjustment
+
+
+monthName : Month -> String
+monthName month =
+    case month of
+        Jan ->
+            "Jan"
+
+        Feb ->
+            "Feb"
+
+        Mar ->
+            "Mar"
+
+        Apr ->
+            "Apr"
+
+        May ->
+            "May"
+
+        Jun ->
+            "Jun"
+
+        Jul ->
+            "Jul"
+
+        Aug ->
+            "Aug"
+
+        Sep ->
+            "Sep"
+
+        Oct ->
+            "Oct"
+
+        Nov ->
+            "Nov"
+
+        Dec ->
+            "Dec"
