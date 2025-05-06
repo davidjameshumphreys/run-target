@@ -69,7 +69,13 @@ update msg model =
                 isLeap =
                     (modBy 4 year == 0) && ((modBy 100 year /= 0) || (modBy 400 year == 0))
             in
-            ( { model | time = newTime, isLeap = isLeap }
+            ( { model
+                | time = newTime
+                , isLeap = isLeap
+
+                -- D'oh! this will fail because it's the _previous_ model time
+                , currentMarker = asMarker model
+              }
             , Cmd.none
             )
 
@@ -126,6 +132,31 @@ dayOfYear zone time =
             cumulativeDaysByMonth isLeap month
     in
     daysBeforeMonth + day
+
+
+asMarker : Model -> Marker
+asMarker model =
+    let
+        year =
+            Time.toYear model.zone model.time
+
+        month =
+            Time.toMonth model.zone model.time
+
+        day =
+            Time.toDay model.zone model.time
+
+        isLeap =
+            (modBy 4 year == 0) && ((modBy 100 year /= 0) || (modBy 400 year == 0))
+
+        -- Get cumulative days at the start of each month
+        daysBeforeMonth =
+            cumulativeDaysByMonth isLeap month
+    in
+    { m = month
+    , days = day
+    , cDays = daysBeforeMonth + day
+    }
 
 
 {-| -}
