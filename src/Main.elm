@@ -111,32 +111,7 @@ subscriptions _ =
 view : Model -> Html Msg
 view model =
     div []
-        [ renderTable model.isLeap model.distance
-        ]
-
-
-{-| Calculate the day of the year (1-366) for a given date
--}
-dayOfYear : Zone -> Posix -> Int
-dayOfYear zone time =
-    let
-        year =
-            Time.toYear zone time
-
-        month =
-            Time.toMonth zone time
-
-        day =
-            Time.toDay zone time
-
-        isLeap =
-            (modBy 4 year == 0) && ((modBy 100 year /= 0) || (modBy 400 year == 0))
-
-        -- Get cumulative days at the start of each month
-        daysBeforeMonth =
-            cumulativeDaysByMonth isLeap month
-    in
-    daysBeforeMonth + day
+        [ renderTable model ]
 
 
 asMarker : Zone -> Posix -> Marker
@@ -164,7 +139,11 @@ asMarker zone time =
     }
 
 
-{-| -}
+{-| List all Months as Markers
+
+Calculates the cumulativeDays, accounting for the leap year
+
+-}
 allMonths : Bool -> List Marker
 allMonths isLeap =
     let
@@ -217,8 +196,8 @@ renderLine isLeap distance m =
         ]
 
 
-renderTable : Bool -> Int -> Html msg
-renderTable isLeap distance =
+renderTable : Model -> Html msg
+renderTable model =
     table []
         [ thead []
             [ tr []
@@ -232,8 +211,8 @@ renderTable isLeap distance =
             ]
         , tbody []
             (List.map
-                (renderLine isLeap distance)
-                (allMonths isLeap)
+                (renderLine model.isLeap model.distance)
+                (allMonths model.isLeap)
             )
         ]
 
