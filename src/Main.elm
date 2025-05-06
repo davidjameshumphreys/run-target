@@ -2,7 +2,6 @@ module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Browser
 import Html exposing (..)
-import List
 import RunTable exposing (..)
 import Task
 import Time exposing (Month(..), Posix, Zone)
@@ -77,29 +76,9 @@ subscriptions _ =
 
 view : Model -> Html Msg
 view model =
-    let
-        hour =
-            String.fromInt (Time.toHour model.zone model.time)
-
-        minute =
-            String.fromInt (Time.toMinute model.zone model.time)
-
-        second =
-            String.fromInt (Time.toSecond model.zone model.time)
-
-        day =
-            String.fromInt (dayOfYear model.zone model.time)
-    in
     div []
-        [ h1 [] [ text (hour ++ ":" ++ minute ++ ":" ++ second ++ ", " ++ day) ]
-        , renderTable False 1000
+        [ renderTable False 1000
         ]
-
-
-renderFoo : Time.Month -> Html msg
-renderFoo month =
-    tr []
-        [ td [] [ text (String.fromInt (cumulativeDaysByMonth False month)) ] ]
 
 
 {-| Calculate the day of the year (1-366) for a given date

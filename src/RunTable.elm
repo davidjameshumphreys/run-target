@@ -4,11 +4,6 @@ import Html exposing (..)
 import Time exposing (Month(..))
 
 
-months : List Month
-months =
-    [ Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec ]
-
-
 type alias M =
     { name : String
     , m : Month
